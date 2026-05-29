@@ -1,5 +1,6 @@
 
 //The left sidebar showing all topics with room counts.
+//The active topic is controlled by parent(Home.jsx) using props
 
 function TopicSidebar({ topics, activeTopic, onTopicSelect, loading }) {
 

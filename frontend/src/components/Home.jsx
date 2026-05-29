@@ -1,4 +1,4 @@
-// Home.jsx
+
 // The main landing page of DevDen.
 // Its only job is to:
 // 1. Fetch data from the API

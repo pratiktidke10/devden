@@ -1,3 +1,4 @@
+//Display a single room as a clickable card
 
 import { Link } from 'react-router-dom'
 import Avatar from './Avatar'
