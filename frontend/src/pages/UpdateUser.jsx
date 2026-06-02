@@ -60,34 +60,35 @@ function UpdateUser() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setSaving(true)
-    setError('')
+  e.preventDefault()
+  setSaving(true)
+  setError('')
 
-    // FormData is used instead of JSON when uploading files.
-    // JSON cannot encode binary file data — FormData can.
-    // The backend expects multipart/form-data for file uploads.
-    const data = new FormData()
-    data.append('name', formData.name)
-    data.append('username', formData.username.toLowerCase())
-    data.append('bio', formData.bio)
-    if (avatarFile) data.append('avatar', avatarFile)
+  const data = new FormData()
+  data.append('name', formData.name)
+  data.append('username', formData.username.toLowerCase())
+  data.append('bio', formData.bio)
 
-    try {
-      await updateUserProfile(currentUserId, data)
-      navigate(`/profile/${currentUserId}`)
-    } catch (err) {
-      const errData = err.response?.data
-      if (errData) {
-        const first = Object.values(errData)[0]
-        setError(Array.isArray(first) ? first[0] : first)
-      } else {
-        setError('Could not update profile.')
-      }
-    } finally {
-      setSaving(false)
-    }
+  // Only append avatar if a new file was selected
+  if (avatarFile) {
+    data.append('avatar', avatarFile)
   }
+
+  try {
+    await updateUserProfile(currentUserId, data)
+    navigate(`/profile/${currentUserId}`)
+  } catch (err) {
+    const errData = err.response?.data
+    if (errData) {
+      const first = Object.values(errData)[0]
+      setError(Array.isArray(first) ? first[0] : first)
+    } else {
+      setError('Could not update profile.')
+    }
+  } finally {
+    setSaving(false)
+  }
+}
 
   if (loading) {
     return (

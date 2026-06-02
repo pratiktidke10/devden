@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework_simplejwt.token_blacklist',
 
     # Third party
     'rest_framework',
@@ -91,6 +92,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
+    'UNAUTHENTICATED_TOKEN': None,
 }
 
 # --- JWT SETTINGS ---
@@ -136,6 +138,7 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
 }
 MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # --- MISC ---
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import Home from './components/Home'
+import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Room from './pages/Room'
@@ -8,7 +8,7 @@ import Profile from './pages/Profile'
 import UpdateUser from './pages/UpdateUser'
 import CreateRoom from './pages/CreateRoom'
 import Topics from './pages/Topics'
-import { Activity } from 'react'
+import Activity from './pages/Activity'
 
 function App() {
   return (

@@ -32,6 +32,8 @@ function Login() {
       // Refresh token — used to get a new access token when it expires
       localStorage.setItem('access_token', res.data.access)
       localStorage.setItem('refresh_token', res.data.refresh)
+      localStorage.setItem('user_id', res.data.user.id)       
+      localStorage.setItem('user_name', res.data.user.name)    
 
       navigate('/') // redirect to home on success
     } catch (err) {

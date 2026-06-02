@@ -8,3 +8,6 @@ export const registerUser = (data) =>
 
 export const getMe = () =>
   api.get('/api/auth/user/')
+
+export const logoutUser = (refresh) =>
+  api.post('/api/auth/logout/', { refresh })

@@ -47,11 +47,14 @@ function Register() {
         username: formData.username.toLowerCase(),
         email: formData.email.toLowerCase(),
         password: formData.password,
+        password2: formData.password2,
       })
 
       // Auto login after registration — same as login flow
       localStorage.setItem('access_token', res.data.access)
       localStorage.setItem('refresh_token', res.data.refresh)
+      localStorage.setItem('user_id', res.data.user.id)       
+      localStorage.setItem('user_name', res.data.user.name)
 
       navigate('/')
     } catch (err) {

@@ -11,11 +11,26 @@ from .models import User, Topic, Room, Message
 # ── USER SERIALIZERS ──────────────────────────────────────────
 
 class UserSerializer(serializers.ModelSerializer):
-    # ModelSerializer automatically generates fields from the model.
-    # We just specify which fields to include.
+    avatar = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = ['id', 'name', 'username', 'email', 'bio', 'avatar']
+
+    def get_avatar(self, obj):
+        # If no avatar, return None
+        if not obj.avatar:
+            return None
+
+        # Build full URL with backend domain
+        request = self.context.get('request')
+        if request and obj.avatar:
+            return request.build_absolute_uri(obj.avatar.url)
+
+        # Fallback for when request context isn't available
+        if obj.avatar:
+            return f"http://127.0.0.1:8000{obj.avatar.url}"
+        return None
 
 
 class RegisterSerializer(serializers.ModelSerializer):

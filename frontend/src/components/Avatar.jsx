@@ -1,7 +1,4 @@
-
-
 function Avatar({ initials, color, imageUrl, size = 'md' }) {
-
   const sizes = {
     sm: 'w-6 h-6 text-xs',
     md: 'w-8 h-8 text-sm',
@@ -9,8 +6,10 @@ function Avatar({ initials, color, imageUrl, size = 'md' }) {
     xl: 'w-20 h-20 text-2xl',
   }
 
-  // If user has uploaded a profile picture, show it
-  if (imageUrl) {
+  // Show image only if imageUrl exists and is not the default svg
+  const showImage = imageUrl && !imageUrl.includes('avatar.svg')
+
+  if (showImage) {
     return (
       <img
         src={imageUrl}
@@ -20,7 +19,6 @@ function Avatar({ initials, color, imageUrl, size = 'md' }) {
     )
   }
 
-  // Otherwise show initials with background color
   return (
     <div
       className={`${sizes[size]} rounded-full flex items-center justify-center font-semibold text-white shrink-0`}

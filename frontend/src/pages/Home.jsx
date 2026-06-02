@@ -1,10 +1,3 @@
-
-// The main landing page of DevDen.
-// Its only job is to:
-// 1. Fetch data from the API
-// 2. Manage page-level state (search, active topic)
-// 3. Pass data down to child components
-
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import RoomCard from '../components/RoomCard'
@@ -15,31 +8,21 @@ import { getTopics } from '../api/topics'
 import { getActivity } from '../api/activity'
 
 function Home() {
-  // State for data from API
   const [rooms, setRooms] = useState([])
   const [topics, setTopics] = useState([])
   const [activities, setActivities] = useState([])
-
-  // State for UI controls
   const [search, setSearch] = useState('')
   const [activeTopic, setActiveTopic] = useState('')
-
-  // Loading and error states — always handle these in real apps
   const [loadingRooms, setLoadingRooms] = useState(true)
   const [loadingTopics, setLoadingTopics] = useState(true)
   const [loadingActivity, setLoadingActivity] = useState(true)
   const [error, setError] = useState(null)
 
-  // useEffect runs after the component mounts (appears on screen)
-  // We fetch topics and activity once on mount — they don't change with search
   useEffect(() => {
     fetchTopics()
     fetchActivity()
   }, [])
 
-  // useEffect with [search, activeTopic] dependency array —
-  // This re-runs whenever search or activeTopic changes
-  // This is how we make the search and filter reactive
   useEffect(() => {
     fetchRooms()
   }, [search, activeTopic])
@@ -81,7 +64,7 @@ function Home() {
   return (
     <div className="max-w-screen-xl mx-auto px-5 py-6 flex gap-5">
 
-      {/* Left sidebar — topics */}
+      {/* Left sidebar */}
       <TopicSidebar
         topics={topics}
         activeTopic={activeTopic}
@@ -91,8 +74,6 @@ function Home() {
 
       {/* Main content */}
       <main className="flex-1 min-w-0">
-
-        {/* Search + New Room button */}
         <div className="flex items-center gap-3 mb-5">
           <div className="flex-1 relative">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-den-faint absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -115,7 +96,7 @@ function Home() {
           </Link>
         </div>
 
-        {/* Stats row */}
+        {/* Stats */}
         <div className="grid grid-cols-3 gap-3 mb-5">
           {[
             { label: 'Rooms', value: rooms.length, color: 'text-den-blue' },
@@ -129,19 +110,16 @@ function Home() {
           ))}
         </div>
 
-        {/* Section heading */}
         <p className="font-mono text-xs text-den-faint uppercase tracking-widest mb-3">
           {activeTopic ? `${activeTopic} Rooms` : 'Recent Rooms'}
         </p>
 
-        {/* Error state */}
         {error && (
           <div className="bg-den-surface border border-den-red text-den-red text-sm font-mono p-4 rounded-lg mb-4">
             ⚠ {error}
           </div>
         )}
 
-        {/* Loading skeleton for rooms */}
         {loadingRooms ? (
           [...Array(4)].map((_, i) => (
             <div key={i} className="h-24 bg-den-surface rounded-xl mb-3 animate-pulse" />
@@ -153,10 +131,9 @@ function Home() {
             {search ? `No rooms found for "${search}"` : 'No rooms yet. Create the first one!'}
           </div>
         )}
-
       </main>
 
-      {/* Right sidebar — activity */}
+      {/* Right sidebar */}
       <ActivityFeed
         activities={activities}
         loading={loadingActivity}

@@ -1,6 +1,36 @@
-import { Link } from 'react-router-dom'
+
+// Now auth-aware — shows different UI for logged in vs logged out users.
+// Reads token from localStorage to determine auth state.
+// On logout clears localStorage and redirects home.
+
+import { Link, useNavigate } from 'react-router-dom'
+import { logoutUser } from '../api/auth'
 
 function Navbar() {
+  const navigate = useNavigate()
+
+  // Check if user is logged in by looking for token in localStorage
+  const token = localStorage.getItem('access_token')
+  const userId = localStorage.getItem('user_id')
+  const userName = localStorage.getItem('user_name')
+
+  const handleLogout = async () => {
+    try {
+      const refresh = localStorage.getItem('refresh_token')
+      await logoutUser(refresh)
+    } catch (err) {
+      // Even if API call fails, clear local storage
+      console.error('Logout error', err)
+    } finally {
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
+      localStorage.removeItem('user_id')
+      localStorage.removeItem('user_name')
+      navigate('/')
+      window.location.reload()
+    }
+  }
+
   return (
     <nav className="bg-den-surface border-b border-den-border sticky top-0 z-50">
       <div className="max-w-screen-xl mx-auto px-5 h-14 flex items-center justify-between">
@@ -13,32 +43,66 @@ function Navbar() {
           </span>
         </Link>
 
-        {/* Search */}
-        <div className="hidden md:flex items-center bg-den-bg border border-den-border2 rounded-lg px-3 py-1.5 gap-2 w-64">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-den-faint" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search rooms..."
-            className="bg-transparent text-sm text-den-text placeholder-den-faint outline-none w-full"
-          />
+        {/* Center links */}
+        <div className="hidden md:flex items-center gap-5">
+          <Link
+            to="/topics"
+            className="text-sm text-den-muted hover:text-den-text transition-colors no-underline"
+          >
+            Topics
+          </Link>
+          <Link
+            to="/activity"
+            className="text-sm text-den-muted hover:text-den-text transition-colors no-underline"
+          >
+            Activity
+          </Link>
         </div>
 
-        {/* Right Side */}
+        {/* Right side — auth aware */}
         <div className="flex items-center gap-3">
-          <Link
-            to="/login"
-            className="text-sm text-den-muted hover:text-den-text border border-den-border2 px-3 py-1.5 rounded-md transition-colors"
-          >
-            Login
-          </Link>
-          <Link
-            to="/register"
-            className="text-sm text-white bg-den-green hover:opacity-90 px-3 py-1.5 rounded-md transition-opacity font-medium"
-          >
-            Register
-          </Link>
+          {token ? (
+            // Logged in state
+            <>
+              <Link
+                to="/create-room"
+                className="hidden sm:flex items-center gap-1.5 text-sm text-white bg-[#238636] hover:opacity-90 px-3 py-1.5 rounded-md transition-opacity no-underline font-medium"
+              >
+                <span className="text-base leading-none">+</span>
+                New Room
+              </Link>
+              <Link
+                to={`/profile/${userId}`}
+                className="flex items-center gap-2 no-underline group"
+              >
+                <div className="w-8 h-8 rounded-full bg-[#1f6feb] flex items-center justify-center text-xs font-bold text-white">
+                  {userName?.slice(0, 2).toUpperCase() || 'U'}
+                </div>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="text-sm text-den-muted hover:text-den-red border border-den-border2 px-3 py-1.5 rounded-md transition-colors"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            // Logged out state
+            <>
+              <Link
+                to="/login"
+                className="text-sm text-den-muted hover:text-den-text border border-den-border2 px-3 py-1.5 rounded-md transition-colors no-underline"
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="text-sm text-white bg-den-green hover:opacity-90 px-3 py-1.5 rounded-md transition-opacity no-underline font-medium"
+              >
+                Register
+              </Link>
+            </>
+          )}
         </div>
 
       </div>

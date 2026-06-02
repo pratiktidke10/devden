@@ -37,32 +37,36 @@ function CreateRoom() {
   )
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!formData.topic.trim() || !formData.name.trim()) {
-      setError('Topic and room name are required.')
-      return
-    }
-
-    setLoading(true)
-    setError('')
-
-    try {
-      const res = await createRoom(formData)
-      navigate(`/room/${res.data.id}`)
-    } catch (err) {
-      const errData = err.response?.data
-      if (errData) {
-        const first = Object.values(errData)[0]
-        setError(Array.isArray(first) ? first[0] : first)
-      } else if (err.response?.status === 401) {
-        setError('You must be logged in to create a room.')
-      } else {
-        setError('Could not create room. Please try again.')
-      }
-    } finally {
-      setLoading(false)
-    }
+  e.preventDefault()
+  if (!formData.topic.trim() || !formData.name.trim()) {
+    setError('Topic and room name are required.')
+    return
   }
+
+  setLoading(true)
+  setError('')
+
+  try {
+    const res = await createRoom({
+      topic_name: formData.topic,   
+      name: formData.name,
+      description: formData.description,
+    })
+    navigate(`/room/${res.data.id}`)
+  } catch (err) {
+    const errData = err.response?.data
+    if (errData) {
+      const first = Object.values(errData)[0]
+      setError(Array.isArray(first) ? first[0] : first)
+    } else if (err.response?.status === 401) {
+      setError('You must be logged in to create a room.')
+    } else {
+      setError('Could not create room. Please try again.')
+    }
+  } finally {
+    setLoading(false)
+  }
+}
 
   return (
     <div className="max-w-lg mx-auto px-5 py-8">
