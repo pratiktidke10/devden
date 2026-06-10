@@ -37,9 +37,9 @@ function Navbar() {
 
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 no-underline">
-          <span className="w-2 h-2 rounded-full bg-den-green animate-pulse"></span>
+          <img src="/devden-favicon.svg" alt="DevDen" className="w-7 h-7" />
           <span className="font-mono font-bold text-den-blue text-lg tracking-tight">
-            DevDen
+            Dev<span className="text-den-green">Den</span>
           </span>
         </Link>
 
