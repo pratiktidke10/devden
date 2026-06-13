@@ -18,18 +18,17 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'username', 'email', 'bio', 'avatar']
 
     def get_avatar(self, obj):
-        # If no avatar, return None
         if not obj.avatar:
             return None
-
-        # Build full URL with backend domain
+        # Cloudinary returns full URL directly
+        # For local storage we need to build the URL
+        avatar_url = str(obj.avatar)
+        if avatar_url.startswith('http'):
+            return avatar_url
+        # Fallback for local files
         request = self.context.get('request')
-        if request and obj.avatar:
+        if request:
             return request.build_absolute_uri(obj.avatar.url)
-
-        # Fallback for when request context isn't available
-        if obj.avatar:
-            return f"http://127.0.0.1:8000{obj.avatar.url}"
         return None
 
 
