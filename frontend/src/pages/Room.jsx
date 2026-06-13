@@ -30,9 +30,9 @@ function Room() {
     try {
       setLoading(true)
       const res = await getRoom(id)
-      setRoom(res.data.room)
-      setMessages(res.data.messages)
-      setParticipants(res.data.participants)
+      setRoom(res.data)
+      setMessages(res.data.messages || [])
+      setParticipants(res.data.participants || [])
     } catch (err) {
       setError('Room not found or could not be loaded.')
     } finally {

@@ -9,6 +9,7 @@ import UpdateUser from './pages/UpdateUser'
 import CreateRoom from './pages/CreateRoom'
 import Topics from './pages/Topics'
 import Activity from './pages/Activity'
+import UpdateRoom from './pages/UpdateRoom'
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path='/create-room' element={<CreateRoom />} />
           <Route path='/topics' element={<Topics />} />
           <Route path='/activity' element={<Activity />} />
+          <Route path='/update-room/:id' element = {<UpdateRoom />} />
         </Routes>
       </div>
     </Router>
