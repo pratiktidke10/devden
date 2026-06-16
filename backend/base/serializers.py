@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'name', 'username', 'email', 'bio', 'avatar']
+        fields = ['id', 'name', 'username', 'bio', 'avatar']
 
     def get_avatar(self, obj):
         if not obj.avatar:
@@ -26,6 +26,24 @@ class UserSerializer(serializers.ModelSerializer):
         if avatar_url.startswith('http'):
             return avatar_url
         # Fallback for local files
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri(obj.avatar.url)
+        return None
+    
+class CurrentUserSerializer(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['id', 'name', 'username', 'email', 'bio', 'avatar']
+
+    def get_avatar(self, obj):
+        if not obj.avatar:
+            return None
+        avatar_url = str(obj.avatar)
+        if avatar_url.startswith('http'):
+            return avatar_url
         request = self.context.get('request')
         if request:
             return request.build_absolute_uri(obj.avatar.url)

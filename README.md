@@ -19,7 +19,7 @@
 | Backend Hosting | Render |
 | Frontend Hosting | Vercel |
 
----
+---d
 
 ## Chapter 1 — The Old Version & Why I Rebuilt It
 

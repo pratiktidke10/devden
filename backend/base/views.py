@@ -16,6 +16,7 @@ from django.db.models import Q
 from .models import User, Topic, Room, Message
 from .serializers import (
     UserSerializer,
+    CurrentUserSerializer,
     RegisterSerializer,
     TopicSerializer,
     RoomSerializer,
@@ -79,10 +80,12 @@ class RegisterView(APIView):
             tokens = get_tokens_for_user(user)
             return Response({
                 **tokens,
-                'user': UserSerializer(user, context={'request': request}).data
+                'user': CurrentUserSerializer(
+                    user,
+                    context={'request': request}
+                ).data
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -108,7 +111,7 @@ class LoginView(APIView):
         tokens = get_tokens_for_user(user)
         return Response({
             **tokens,
-            'user': UserSerializer(user, context={'request': request}).data
+            'user': CurrentUserSerializer(user, context={'request': request}).data
         }, status=status.HTTP_200_OK)
 
 
@@ -137,7 +140,7 @@ class CurrentUserView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        serializer = UserSerializer(request.user, context={'request': request})
+        serializer = CurrentUserSerializer(request.user, context={'request': request})
         return Response(serializer.data)
 
 
