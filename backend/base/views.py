@@ -14,6 +14,7 @@ from rest_framework.authentication import SessionAuthentication
 from django.contrib.auth import authenticate
 from django.db.models import Q
 from .models import User, Topic, Room, Message
+from rest_framework.pagination import PageNumberPagination
 from .serializers import (
     UserSerializer,
     CurrentUserSerializer,
@@ -25,6 +26,10 @@ from .serializers import (
 )
 
 
+class StandardPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 50
 
 class SilentJWTAuthentication(JWTAuthentication):
     # This custom class extends the standard JWT authentication.
@@ -167,8 +172,11 @@ class RoomListView(APIView):
         )
         if topic:
             rooms = rooms.filter(topic__name__iexact=topic)
-        serializer = RoomSerializer(rooms, many=True)
-        return Response(serializer.data)
+
+        paginator = StandardPagination()
+        paginated_rooms = paginator.paginate_queryset(rooms , request)
+        serializer = RoomSerializer(paginated_rooms, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         serializer = RoomSerializer(data=request.data)
@@ -338,6 +346,8 @@ class ActivityView(APIView):
     permission_classes = []
 
     def get(self, request):
-        messages = Message.objects.all().order_by('-created')[:20]
-        serializer = MessageSerializer(messages, many=True)
-        return Response(serializer.data)
+        messages = Message.objects.all().order_by('-created')
+        paginator = StandardPagination()
+        paginated_messages = paginator.paginate_queryset(messages, request)
+        serializer = MessageSerializer(paginated_messages, many=True)
+        return paginator.get_paginated_response(serializer.data)

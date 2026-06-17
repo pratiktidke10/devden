@@ -17,6 +17,7 @@ function Home() {
   const [loadingTopics, setLoadingTopics] = useState(true)
   const [loadingActivity, setLoadingActivity] = useState(true)
   const [error, setError] = useState(null)
+  const [totalRooms , setTotalRooms] = useState(0)
 
   useEffect(() => {
     fetchTopics()
@@ -31,7 +32,8 @@ function Home() {
     try {
       setLoadingRooms(true)
       const res = await getRooms(search, activeTopic)
-      setRooms(res.data)
+      setRooms(res.data.results || res.data)
+      setTotalRooms(res.data.count || res.data.length)
     } catch (err) {
       setError('Failed to load rooms. Is the backend running?')
     } finally {
@@ -53,7 +55,7 @@ function Home() {
   const fetchActivity = async () => {
     try {
       const res = await getActivity()
-      setActivities(res.data)
+      setActivities(res.data.results || res.data)
     } catch (err) {
       console.error('Failed to load activity', err)
     } finally {
@@ -99,7 +101,7 @@ function Home() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3 mb-5">
           {[
-            { label: 'Rooms', value: rooms.length, color: 'text-den-blue' },
+            { label: 'Rooms', value: totalRooms, color: 'text-den-blue' },
             { label: 'Topics', value: topics.length, color: 'text-den-green' },
             { label: 'Messages', value: activities.length, color: 'text-den-amber' },
           ].map(s => (
