@@ -6,9 +6,11 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { registerUser } from '../api/auth'
+import { useAuth } from '../context/AuthContext'
 
 function Register() {
   const navigate = useNavigate()
+  const {login} = useAuth
 
   const [formData, setFormData] = useState({
     name: '',
@@ -50,11 +52,7 @@ function Register() {
         password2: formData.password2,
       })
 
-      // Auto login after registration — same as login flow
-      localStorage.setItem('access_token', res.data.access)
-      localStorage.setItem('refresh_token', res.data.refresh)
-      localStorage.setItem('user_id', res.data.user.id)       
-      localStorage.setItem('user_name', res.data.user.name)
+      login(res.data.user, { access: res.data.access, refresh: res.data.refresh })
 
       navigate('/')
     } catch (err) {

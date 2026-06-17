@@ -5,9 +5,11 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { loginUser } from '../api/auth'
+import { useAuth } from '../context/AuthContext'
 
 function Login() {
   const navigate = useNavigate()
+  const {login} = useAuth()
 
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
@@ -27,13 +29,7 @@ function Login() {
     try {
       const res = await loginUser(formData.email, formData.password)
 
-      // Store both tokens in localStorage
-      // Access token — sent with every API request
-      // Refresh token — used to get a new access token when it expires
-      localStorage.setItem('access_token', res.data.access)
-      localStorage.setItem('refresh_token', res.data.refresh)
-      localStorage.setItem('user_id', res.data.user.id)       
-      localStorage.setItem('user_name', res.data.user.name)    
+      login(res.data.user, { access: res.data.access, refresh: res.data.refresh }) 
 
       navigate('/') // redirect to home on success
     } catch (err) {

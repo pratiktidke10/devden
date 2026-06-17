@@ -2,9 +2,11 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { getRoom, deleteRoom, postMessage, deleteMessage } from '../api/rooms'
 import Avatar from '../components/Avatar'
+import { useAuth } from '../context/AuthContext'
 
 function Room() {
   const { id } = useParams()
+  const { user: currentUser } = useAuth()
   const navigate = useNavigate()
 
   const [room, setRoom] = useState(null)
@@ -16,7 +18,7 @@ function Room() {
   const [error, setError] = useState('')
 
   const messagesEndRef = useRef(null)
-  const currentUserId = localStorage.getItem('user_id')
+  const currentUserId = currentUser?.id
 
   useEffect(() => {
     fetchRoom()
@@ -111,7 +113,7 @@ function Room() {
     )
   }
 
-  const isHost = room?.host?.id === parseInt(currentUserId)
+  const isHost = room?.host?.id === currentUser?.id
 
   return (
     <div className="max-w-screen-xl mx-auto px-5 py-6 flex gap-5">
