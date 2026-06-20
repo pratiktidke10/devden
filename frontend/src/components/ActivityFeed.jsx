@@ -1,6 +1,28 @@
 import Avatar from './Avatar'
 import { Link } from 'react-router-dom'
 
+// Converts an ISO timestamp like "2026-06-18T07:44:22.479518+05:30"
+// into a short relative string like "2d ago" or "5m ago"
+function timeAgo(dateString) {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  const seconds = Math.floor((new Date() - date) / 1000)
+
+  const intervals = [
+    { label: 'y', secs: 31536000 },
+    { label: 'mo', secs: 2592000 },
+    { label: 'd', secs: 86400 },
+    { label: 'h', secs: 3600 },
+    { label: 'm', secs: 60 },
+  ]
+
+  for (const interval of intervals) {
+    const count = Math.floor(seconds / interval.secs)
+    if (count >= 1) return `${count}${interval.label} ago`
+  }
+  return 'just now'
+}
+
 function ActivityFeed({ activities, loading }) {
   const suggested = ['TypeScript', 'Next.js', 'PostgreSQL', 'Docker', 'FastAPI']
 
@@ -36,7 +58,9 @@ function ActivityFeed({ activities, loading }) {
                     >
                       {a.user?.name}
                     </Link>
-                    <span className="text-den-faint font-mono text-xs shrink-0">{a.time}</span>
+                    <span className="text-den-faint font-mono text-xs shrink-0">
+                      {timeAgo(a.created)}
+                    </span>
                   </div>
                   <p className="text-xs text-den-faint leading-snug line-clamp-2 mt-0.5">
                     {a.body}

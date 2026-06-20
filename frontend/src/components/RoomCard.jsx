@@ -1,6 +1,25 @@
 import { useNavigate } from 'react-router-dom'
 import Avatar from './Avatar'
 
+function timeAgo(dateString) {
+  const date = new Date(dateString)
+  const seconds = Math.floor((new Date() - date) / 1000)
+
+  const intervals = [
+    { label: 'y', secs: 31536000 },
+    { label: 'mo', secs: 2592000 },
+    { label: 'd', secs: 86400 },
+    { label: 'h', secs: 3600 },
+    { label: 'm', secs: 60 },
+  ]
+
+  for (const interval of intervals) {
+    const count = Math.floor(seconds / interval.secs)
+    if (count >= 1) return `${count}${interval.label} ago`
+  }
+  return 'just now'
+}
+
 function RoomCard({ room }) {
   const navigate = useNavigate()
 
@@ -50,7 +69,7 @@ function RoomCard({ room }) {
             </svg>
             {room.messages_count ?? 0}
           </span>
-          <span>{room.updated}</span>
+          <span>timeAgo({room.updated})</span>
         </div>
       </div>
     </div>
