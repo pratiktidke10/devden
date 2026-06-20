@@ -69,7 +69,7 @@ function RoomCard({ room }) {
             </svg>
             {room.messages_count ?? 0}
           </span>
-          <span>timeAgo({room.updated})</span>
+          <span>{timeAgo(room.updated)}</span>
         </div>
       </div>
     </div>
